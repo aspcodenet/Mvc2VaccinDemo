@@ -1,0 +1,119 @@
+﻿@using System.Collections.Specialized
+@model Mvc1VaccinDemo.ViewModels.PersonIndexViewModel
+
+@{
+    ViewData["Title"] = "Personer";
+}
+<section class="py-5">
+
+    <div class="row">
+        <div class="col-lg-12 mb-5">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="h6 text-uppercase mb-0">Sök</h3>
+                </div>
+                <div class="card-body">
+
+
+                    <form method="get" asp-controller="Person" asp-action="Index">
+
+                        <div class="form-row align-items-center">
+                            <div class="col-auto">
+                                <input type="text" class="form-control" asp-for="q">
+                            </div>
+                            <div class="col-auto">
+                                <button type="submit" class="btn btn-primary">Sök</button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="selectPersonPlaceHolder">
+
+    </div>
+
+
+    <div class="row">
+
+        @*<form >
+
+            <div class="form-row align-items-center">
+                <div class="col-auto">
+                    <label for="SearchWord">Sök:</label>
+                </div>
+                <div class="col-auto">
+                    <input type="text" class="form-control" asp-for="SearchWord">
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary">Sök</button>
+                </div>
+            </div>
+
+        </form>*@
+
+
+        <div class="col-lg-12 mb-5">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="h6 text-uppercase mb-0">Person</h3>
+                </div>
+                <div class="card-body">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">Personnummer</th>
+                                <th scope="col">Namn</th>
+                                <th scope="col">Email</th>
+                                <th scope="col"></th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var personViewModel in Model.Personer)
+                            {
+                <tr>
+                    <td>@personViewModel.PersonalNumber</td>
+                    <td>@personViewModel.Name</td>
+                    <td>@personViewModel.EmailAddress</td>
+                    <td><a href="#" onclick="FetchPerson(@personViewModel.Id); return false;" class="btn btn-secondary active" role="button" aria-pressed="true">Show details</a></td>
+                    <td><a asp-controller="Person" asp-action="Edit" asp-route-Id="@personViewModel.Id" class="btn btn-secondary active" role="button" aria-pressed="true">Edit</a></td>
+                </tr>}
+
+                        </tbody>
+                    </table>
+
+
+                </div>
+            </div>
+        </div>
+
+        <a asp-controller="Person" asp-action="New" class="btn btn-secondary" role="button" aria-pressed="true">
+            Create new
+        </a>
+
+        <a asp-controller="Person" asp-action="BulkAdd" class="btn btn-secondary" role="button" aria-pressed="true">
+            Bulk add
+        </a>
+
+    </div>
+</section>
+
+@section Scripts
+{
+    <script>
+        function FetchPerson(id) {
+            $.ajax({
+                url: "/Person/_SelectPerson/" + id,
+                success: function (result) {
+                    $('#selectPersonPlaceHolder').html(result);
+                }
+            });
+        }
+    </script>    
+}
+
