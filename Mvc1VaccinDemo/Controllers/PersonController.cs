@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Mvc1VaccinDemo.Data;
 using Mvc1VaccinDemo.Services.Krisinformation;
 using Mvc1VaccinDemo.Services.PersonGenerator;
@@ -63,14 +65,18 @@ namespace Mvc1VaccinDemo.Controllers
 
         // GET
         [Authorize(Roles = "Admin, Nurse")]
-        public IActionResult Index(string q, string sortField, string sortOrder)
+        public IActionResult Index(string q, string sortField, string sortOrder, int page = 1)
         {
            var viewModel = new PersonIndexViewModel();
 
            var query = _dbContext.Personer
                .Where(r => q == null || r.Name.Contains(q) || r.PersonalNumber.Contains(q));
 
-           if (string.IsNullOrEmpty(sortField))
+
+           //ANTAL POSTER SOM MATCHAR FILTRET
+           int totalRowCount = query.Count();
+
+            if (string.IsNullOrEmpty(sortField))
                sortField = "Namn";
            if (string.IsNullOrEmpty(sortOrder))
                sortOrder = "asc";
@@ -100,6 +106,22 @@ namespace Mvc1VaccinDemo.Controllers
 
             }
 
+           int pageSize = 10;
+
+           var pageCount = (double)totalRowCount / pageSize;
+           viewModel.TotalPages = (int)Math.Ceiling(pageCount);
+
+
+
+
+            //Skip - hoppa över så många
+            //Take - sen ta så många
+
+            int howManyRecordsToSkip = (page - 1) * pageSize;  // Sida 1 ->  0
+
+            query = query.Skip(howManyRecordsToSkip).Take(pageSize);
+
+
             viewModel.Personer = query
                 .Select(person => new PersonViewModel
                 {
@@ -112,6 +134,7 @@ namespace Mvc1VaccinDemo.Controllers
             viewModel.q = q;
             viewModel.SortOrder = sortOrder;
             viewModel.SortField = sortField;
+            viewModel.Page = page;
             viewModel.OppositeSortOrder = sortOrder == "asc" ? "desc" : "asc";
             return View(viewModel);
         }

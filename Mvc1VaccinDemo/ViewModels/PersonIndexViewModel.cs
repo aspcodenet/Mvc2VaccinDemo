@@ -9,5 +9,7 @@ namespace Mvc1VaccinDemo.ViewModels
         public string SortOrder { get; set; }
         public string SortField { get; set; }
         public string OppositeSortOrder { get; set; }
+        public int Page { get; set; }
+        public int TotalPages { get; set; }
     }
 }

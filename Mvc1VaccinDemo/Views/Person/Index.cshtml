@@ -140,15 +140,98 @@
                         <tbody>
                             @foreach (var personViewModel in Model.Personer)
                             {
-                <tr>
-                    <td>@personViewModel.PersonalNumber</td>
-                    <td>@personViewModel.Name</td>
-                    <td>@personViewModel.EmailAddress</td>
-                    <td><a href="#" onclick="FetchPerson(@personViewModel.Id); return false;" class="btn btn-secondary active" role="button" aria-pressed="true">Show details</a></td>
-                    <td><a asp-controller="Person" asp-action="Edit" asp-route-Id="@personViewModel.Id" class="btn btn-secondary active" role="button" aria-pressed="true">Edit</a></td>
-                </tr>}
+                                <tr>
+                                    <td>@personViewModel.PersonalNumber</td>
+                                    <td>@personViewModel.Name</td>
+                                    <td>@personViewModel.EmailAddress</td>
+                                    <td><a href="#" onclick="FetchPerson(@personViewModel.Id); return false;" class="btn btn-secondary active" role="button" aria-pressed="true">Show details</a></td>
+                                    <td><a asp-controller="Person" asp-action="Edit" asp-route-Id="@personViewModel.Id" class="btn btn-secondary active" role="button" aria-pressed="true">Edit</a></td>
+                                </tr>
+                            }
 
                         </tbody>
+                        <tfoot>
+                        <tr>
+                            <td colspan="5">
+                                <nav aria-label="...">
+                                    <ul class="pagination">
+                                        <li class="page-item @(Model.Page == 1 ? "disabled" : "")">
+
+                                            <a class="page-link"
+                                               asp-controller="Person"
+                                               asp-action="Index"
+                                               asp-route-sortField="@Model.SortField"
+                                               asp-route-sortOrder="@Model.SortOrder"
+                                               asp-route-page="@(Model.Page - 1)"
+                                               asp-route-q="@Model.q"                                            
+                                            
+                                               >Previous</a>
+                                        </li>
+                                        
+                                        
+                                        @for (int pa = 1; pa <= Model.TotalPages; pa++)
+                                        {
+
+                                            <li class="page-item @(pa == Model.Page ? "active" : "")">
+                                                <a class="page-link"
+                                                   asp-controller="Person"
+                                                   asp-action="Index"
+                                                   asp-route-sortField="@Model.SortField"
+                                                   asp-route-sortOrder="@Model.SortOrder"
+                                                   asp-route-page="@pa"
+                                                   asp-route-q="@Model.q">
+                                                    @pa
+                                                </a>
+                                            </li>
+                                        }
+                                        
+                                        
+
+                                        <li class="page-item">
+                                            <a class="page-link @(Model.Page == Model.TotalPages  ? "disabled" : "")" 
+                                               asp-controller="Person"
+                                               asp-action="Index"
+                                               asp-route-sortField="@Model.SortField"
+                                               asp-route-sortOrder="@Model.SortOrder"
+                                               asp-route-page="@(Model.Page + 1)"
+                                               asp-route-q="@Model.q">Next</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </td>
+                            
+
+                            @*<td>
+                                    @if (Model.Page > 1)
+                                    {
+                                        <a class="btn btn-primary"
+                                           asp-controller="Person"
+                                           asp-action="Index"
+                                           asp-route-sortField="@Model.SortField"
+                                           asp-route-sortOrder="@Model.SortOrder"
+                                           asp-route-page="@(Model.Page - 1)"
+                                           asp-route-q="@Model.q">
+                                            Prev
+                                        </a>
+
+                                    }
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <a class="btn btn-primary"
+                                        asp-controller="Person"
+                                       asp-action="Index"
+                                       asp-route-sortField="@Model.SortField"
+                                       asp-route-sortOrder="@Model.SortOrder"
+                                       asp-route-page="@(Model.Page + 1)"
+                                       asp-route-q="@Model.q">
+                                        Next
+                                    </a>
+                                </td>*@
+                        </tr>
+                        </tfoot>
                     </table>
 
 
