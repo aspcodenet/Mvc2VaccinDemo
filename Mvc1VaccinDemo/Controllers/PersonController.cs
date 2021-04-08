@@ -63,12 +63,44 @@ namespace Mvc1VaccinDemo.Controllers
 
         // GET
         [Authorize(Roles = "Admin, Nurse")]
-        public IActionResult Index(string q)
+        public IActionResult Index(string q, string sortField, string sortOrder)
         {
            var viewModel = new PersonIndexViewModel();
 
-            viewModel.Personer = _dbContext.Personer
-                .Where(r => q == null || r.Name.Contains(q) || r.PersonalNumber.Contains(q))
+           var query = _dbContext.Personer
+               .Where(r => q == null || r.Name.Contains(q) || r.PersonalNumber.Contains(q));
+
+           if (string.IsNullOrEmpty(sortField))
+               sortField = "Namn";
+           if (string.IsNullOrEmpty(sortOrder))
+               sortOrder = "asc";
+
+           if (sortField == "Namn")
+           {
+               if(sortOrder == "asc") 
+                   query = query.OrderBy(y => y.Name);
+               else
+                   query = query.OrderByDescending(y => y.Name);
+            }
+
+           if (sortField == "Email")
+           {
+               if (sortOrder == "asc")
+                    query = query.OrderBy(y => y.EmailAddress);
+               else
+                   query = query.OrderByDescending(y => y.EmailAddress);
+            }
+
+           if (sortField == "Personnummer")
+           {
+               if (sortOrder == "asc")
+                    query = query.OrderBy(y => y.PersonalNumber);
+               else
+                   query = query.OrderByDescending(y => y.PersonalNumber);
+
+            }
+
+            viewModel.Personer = query
                 .Select(person => new PersonViewModel
                 {
                     Id = person.Id,
@@ -77,6 +109,10 @@ namespace Mvc1VaccinDemo.Controllers
                     PersonalNumber = person.PersonalNumber
                 }).ToList();
 
+            viewModel.q = q;
+            viewModel.SortOrder = sortOrder;
+            viewModel.SortField = sortField;
+            viewModel.OppositeSortOrder = sortOrder == "asc" ? "desc" : "asc";
             return View(viewModel);
         }
 

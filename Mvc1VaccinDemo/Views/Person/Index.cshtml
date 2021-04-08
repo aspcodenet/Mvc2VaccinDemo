@@ -1,4 +1,5 @@
 ﻿@using System.Collections.Specialized
+@using Microsoft.EntityFrameworkCore.Scaffolding
 @model Mvc1VaccinDemo.ViewModels.PersonIndexViewModel
 
 @{
@@ -66,9 +67,72 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th scope="col">Personnummer</th>
-                                <th scope="col">Namn</th>
-                                <th scope="col">Email</th>
+                                <th scope="col">
+                                    <a asp-controller="Person"
+                                       asp-action="Index"
+                                       asp-route-sortField="Personnummer"
+                                       asp-route-sortOrder="@(Model.SortField == "Personnummer" ? Model.OppositeSortOrder : "" )"
+                                       asp-route-q="@Model.q">
+                                        Personnummer
+                                        @if (Model.SortField == "Personnummer")
+                                        {
+                                            if (Model.SortOrder == "asc")
+                                            {
+                                                <i class="fas fa-sort-down"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="fas fa-sort-up"></i>
+                                            }
+
+                                        }
+
+                                    </a>
+                                </th>
+                                <th scope="col">
+
+                                    <a asp-controller="Person"
+                                       asp-action="Index"
+                                       asp-route-sortField="Namn"
+                                       asp-route-sortOrder="@(Model.SortField == "Namn" ? Model.OppositeSortOrder : "" )"
+                                       asp-route-q="@Model.q">
+                                        Namn
+                                        @if (Model.SortField == "Namn")
+                                        {
+                                            if (Model.SortOrder == "asc")
+                                            {
+                                                <i class="fas fa-sort-down"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="fas fa-sort-up"></i>
+                                            }
+
+                                        }
+
+                                    </a>
+                                </th>
+                                <th scope="col">
+                                    <a asp-controller="Person"
+                                       asp-action="Index"
+                                       asp-route-sortField="Email"
+                                       asp-route-sortOrder="@(Model.SortField == "Email" ? Model.OppositeSortOrder : "" )"
+                                       asp-route-q="@Model.q">
+                                        Email
+                                        @if (Model.SortField == "Email")
+                                        {
+                                            if (Model.SortOrder == "asc")
+                                            {
+                                                <i class="fas fa-sort-down"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="fas fa-sort-up"></i>
+                                            }
+
+                                        }
+                                    </a>
+                                </th>
                                 <th scope="col"></th>
                                 <th scope="col"></th>
                             </tr>
