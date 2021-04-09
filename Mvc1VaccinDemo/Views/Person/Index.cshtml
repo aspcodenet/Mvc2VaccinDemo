@@ -187,8 +187,8 @@
                                         
                                         
 
-                                        <li class="page-item">
-                                            <a class="page-link @(Model.Page == Model.TotalPages  ? "disabled" : "")" 
+                                        <li class="page-item @(Model.Page == Model.TotalPages  ? "disabled" : "")">
+                                            <a class="page-link" 
                                                asp-controller="Person"
                                                asp-action="Index"
                                                asp-route-sortField="@Model.SortField"
