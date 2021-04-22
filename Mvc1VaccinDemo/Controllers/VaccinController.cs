@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Connections.Features;
@@ -87,6 +88,20 @@ namespace Mvc1VaccinDemo.Controllers
             return View(viewModel);
         }
 
+
+
+        [HttpGet]
+        public IActionResult ValidateNoDuplicateName(string Namn)
+        {
+            if (_dbContext.Vacciner.Any(r => r.Namn == Namn))
+            {
+                return  Json("Detta vaccin verkar redan vara reggat");
+            }
+
+            return Json(true);
+        }
+
+
         //[Authorize(Roles = "Admin")]
         [HttpPost]
 
@@ -94,6 +109,7 @@ namespace Mvc1VaccinDemo.Controllers
         {
             if (ModelState.IsValid)
             {
+
                 var dbVaccin = new Vaccin();
                 _dbContext.Vacciner.Add(dbVaccin);
                 dbVaccin.Supplier = _dbContext.Suppliers.First(r => r.Id == viewModel.SelectedSupplierId);

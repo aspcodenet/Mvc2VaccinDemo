@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -122,6 +123,7 @@ namespace Mvc1VaccinDemo.Controllers
             query = query.Skip(howManyRecordsToSkip).Take(pageSize);
 
 
+
             viewModel.Personer = query
                 .Select(person => new PersonViewModel
                 {
@@ -130,6 +132,15 @@ namespace Mvc1VaccinDemo.Controllers
                     EmailAddress = person.EmailAddress,
                     PersonalNumber = person.PersonalNumber
                 }).ToList();
+
+            //viewModel.Personer = query
+            //    .Select(person => new PersonViewModel
+            //    {
+            //        Id = person.Id,
+            //        Name = person.Name,
+            //        EmailAddress = person.EmailAddress,
+            //        PersonalNumber = person.PersonalNumber
+            //    }).ToList();
 
             viewModel.q = q;
             viewModel.SortOrder = sortOrder;
@@ -151,7 +162,7 @@ namespace Mvc1VaccinDemo.Controllers
             viewModel.NextVaccinDate = p.PreliminaryNextVaccinDate.HasValue
                 ? p.PreliminaryNextVaccinDate.Value.ToString("yyyy-MM-dd")
                 : "";
-            viewModel.VaccineringsFas = p.VaccineringsFas.Name;
+            viewModel.VaccineringsFas = p.VaccineringsFas?.Name;
             return View(viewModel);
         }
 
@@ -173,7 +184,8 @@ namespace Mvc1VaccinDemo.Controllers
             viewModel.PreliminaryNextVaccinDate = dbPerson.PreliminaryNextVaccinDate;
             viewModel.StreetAddress = dbPerson.StreetAddress;
             
-            viewModel.SelectedVaccineringsFasId = dbPerson.VaccineringsFas.Id;
+            if(dbPerson.VaccineringsFas != null)
+                viewModel.SelectedVaccineringsFasId = dbPerson.VaccineringsFas.Id;
             viewModel.AllaVaccineringsFaser = GetAllVaccineringsFaserAsListItems(); 
 
             return View(viewModel);

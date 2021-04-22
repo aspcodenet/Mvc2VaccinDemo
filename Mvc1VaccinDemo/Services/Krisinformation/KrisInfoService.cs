@@ -1,29 +1,90 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
 namespace Mvc1VaccinDemo.Services.Krisinformation
 {
+    public class CachedKrisInfoService : IKrisInfoService
+    {
+        private readonly IKrisInfoService _inner;
+        private static DateTime lastFetched;
+        private static List<KrisInfo> cachedValue;
+        public CachedKrisInfoService(IKrisInfoService inner)
+        {
+            _inner = inner;
+        }
+        public List<KrisInfo> GetAllKrisInformation()
+        {
+            if ((DateTime.Now - lastFetched).TotalSeconds > 60)
+            {
+                cachedValue = _inner.GetAllKrisInformation();
+                lastFetched = DateTime.Now;
+            }
+
+            return cachedValue;
+        }
+
+        public List<KrisInfo> GetEmergencies()
+        {
+            return GetAllKrisInformation().Where(r => r.Emergency).ToList();
+        }
+
+        public KrisInfo GetKrisInformation(string id)
+        {
+            return GetAllKrisInformation().FirstOrDefault(r => r.Id == id);
+        }
+    }
+
+
+    public class Interest
+    {
+        public DateTime Datum { get; set; }
+        public decimal Value { get; set; }
+    }
+
+    public class InterestService
+    {
+        public List<Interest> GetRepoInterestValues()
+        {
+            return new List<Interest>
+            {
+                new Interest{ Datum = new DateTime(2020,3,21),Value=2.22m},
+                new Interest{ Datum = new DateTime(2020,3,22),Value=2.24m},
+                new Interest{ Datum = new DateTime(2020,3,23),Value=2.18m}
+            };
+        }
+    }
+
+
+    public class KrisInfoConfig
+    {
+        public string Url { get; set; }
+        public int NrToShow { get; set; }
+    }
+
     public class KrisInfoService : IKrisInfoService
     {
+        protected KrisInfoConfig config;
+        public KrisInfoService(IOptions<KrisInfoConfig> conf)
+        {
+            config = conf.Value;
+        }
         public class Test
         {
             public List<KrisInfo> ThemeList { get; set; } = new List<KrisInfo>();
         }
         public List<KrisInfo> GetAllKrisInformation()
         {
-            //var client = new HttpClient();
-            //string result = client.GetStringAsync("http://api.krisinformation.se/v1/themes?format=json").Result;
+            var client = new HttpClient();
+            string result = client.GetStringAsync(config.Url).Result;
 
-            //var listan = JsonConvert.DeserializeObject<Test>(result);
-            //return listan.ThemeList;
-            return new List<KrisInfo>()
-            {
-                new KrisInfo {Id="123",Title="Viktiga råd", Emergency = false,Text="Förutom de nationella råden gäller flera restriktioner och förbud som kan påverka dig.", LinkUrl = "https://www.krisinformation.se/detta-kan-handa/handelser-och-storningar/20192/myndigheterna-om-det-nya-coronaviruset/restriktioner-och-forbud/"},
-                new KrisInfo{Id="998",Title="Om du känner oro", Emergency = false,Text="ur du kan ta hand om din eller andras psykiska hälsa under denna kris.",LinkUrl = "https://www.krisinformation.se/detta-kan-handa/handelser-och-storningar/20192/myndigheterna-om-det-nya-coronaviruset/for-dig-som-ar-orolig/"},
-                new KrisInfo{Id="1224",Title="Information om covid-19 via SMS", Emergency = false,Text="Bla bla bla", LinkUrl = "https://www.krisinformation.se/detta-kan-handa/handelser-och-storningar/20192/myndigheterna-om-det-nya-coronaviruset/sms-om-covid-19/"}
-            };
+            var listan = JsonConvert.DeserializeObject<Test>(result);
+            return listan.ThemeList.Take(config.NrToShow).ToList();
         }
 
         public KrisInfo GetKrisInformation(string id)

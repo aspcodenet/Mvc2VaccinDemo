@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 using Mvc1VaccinDemo.Data;
 using Mvc1VaccinDemo.Services.Krisinformation;
 using Mvc1VaccinDemo.ViewModels;
@@ -7,14 +9,15 @@ namespace Mvc1VaccinDemo.Controllers
 {
     public class ArticleController : BaseController
     {
-        public ArticleController(ApplicationDbContext dbContext, IKrisInfoService krisInfoService) : base(dbContext, krisInfoService)
+        public ArticleController(ApplicationDbContext dbContext, IKrisInfoService krisInfoServices) : base(dbContext, krisInfoServices)
         {
         }
 
         public IActionResult Show(string id)
         {
             var viewModel = new ArticleViewModel();
-            var db = _krisInfoService.GetKrisInformation(id);
+            //var db = new KrisInfoService().GetKrisInformation(id);
+            var db = _krisInfoServices.GetKrisInformation(id);
             viewModel.Text = db.Text;
             viewModel.Displaymode = db.Displaymode;
             viewModel.Text = db.Text;

@@ -128,38 +128,42 @@
                 <li class="sidebar-list-item"><a asp-controller="Vaccin" asp-action="Index" class="sidebar-link text-muted@(activeController == "Vaccin" ? " active" : "")"><i class="o-sales-up-1 mr-3 text-gray"></i><span>Vacciner</span></a></li>
                 <li class="sidebar-list-item"><a asp-controller="Person" asp-action="Index" class="sidebar-link text-muted@(activeController == "Person" ? " active" : "")"><i class="o-sales-up-1 mr-3 text-gray"></i><span>Personer</span></a></li>
                 <li class="sidebar-list-item"><a asp-controller="Faser" asp-action="Index" class="sidebar-link text-muted@(activeController == "Faser" ? " active" : "")"><i class="o-sales-up-1 mr-3 text-gray"></i><span>Vaccinationsfaser</span></a></li>
-                
-                
-                <li class="sidebar-list-item"><a href="#" data-toggle="collapse" data-target="#pages" aria-expanded="false" aria-controls="pages" class="sidebar-link text-muted"><i class="o-wireframe-1 mr-3 text-gray"></i><span>Artiklar</span></a>
+
+
+                <li class="sidebar-list-item"><a asp-controller="Supplier" asp-action="Index" class="sidebar-link text-muted@(activeController == "Supplier" ? " active" : "")"><i class="o-sales-up-1 mr-3 text-gray"></i><span>Suppliers</span></a></li>
+
+
+                <li class="sidebar-list-item">
+                    <a href="#" data-toggle="collapse" data-target="#pages" aria-expanded="false" aria-controls="pages" class="sidebar-link text-muted"><i class="o-wireframe-1 mr-3 text-gray"></i><span>Artiklar</span></a>
                     <div id="pages" class="collapse">
                         <ul class="sidebar-menu list-unstyled border-left border-primary border-thick">
                             @foreach (var art in allaArtiklar)
                             {
-                                <li class="sidebar-list-item"><a asp-controller="Article" asp-action="Show" asp-route-id="@art.Id" class="sidebar-link text-muted pl-lg-5">@art.Title</a></li>
-                            }
+                <li class="sidebar-list-item"><a asp-controller="Article" asp-action="Show" asp-route-id="@art.Id" class="sidebar-link text-muted pl-lg-5">@art.Title</a></li>
+}
                         </ul>
                     </div>
-                </li>                
-                
+                </li>
+
 
                 @if (SignInManager.IsSignedIn(User))
                 {
-    <li class="sidebar-list-item">
-        <a asp-area="Identity" asp-page="/Account/Manage/Index" class="sidebar-link text-muted"><i class="o-exit-1 mr-3 text-gray"></i><span>My account</span></a>
-        <a asp-controller="Home" asp-action="Logout" class="sidebar-link text-muted"><i class="o-exit-1 mr-3 text-gray"></i><span>Logout</span></a>
-    </li> }
-                else
-                {
-    <li class="sidebar-list-item">
-        <a asp-area="Identity" asp-page="/Account/Login" class="sidebar-link text-muted">
-            <i class="o-exit-1 mr-3 text-gray"></i><span>Login</span>
-        </a>
-    </li>
-                    <li class="sidebar-list-item">
-                        <a asp-area="Identity" asp-page="/Account/Register" class="sidebar-link text-muted">
-                            <i class="o-exit-1 mr-3 text-gray"></i><span>Register</span>
-                        </a>
-                    </li>            }
+            <li class="sidebar-list-item">
+                <a asp-area="Identity" asp-page="/Account/Manage/Index" class="sidebar-link text-muted"><i class="o-exit-1 mr-3 text-gray"></i><span>My account</span></a>
+                <a asp-controller="Home" asp-action="Logout" class="sidebar-link text-muted"><i class="o-exit-1 mr-3 text-gray"></i><span>Logout</span></a>
+            </li> }
+                        else
+                        {
+            <li class="sidebar-list-item">
+                <a asp-area="Identity" asp-page="/Account/Login" class="sidebar-link text-muted">
+                    <i class="o-exit-1 mr-3 text-gray"></i><span>Login</span>
+                </a>
+            </li>
+                            <li class="sidebar-list-item">
+                                <a asp-area="Identity" asp-page="/Account/Register" class="sidebar-link text-muted">
+                                    <i class="o-exit-1 mr-3 text-gray"></i><span>Register</span>
+                                </a>
+                            </li>}
             </ul>
 
 
@@ -210,7 +214,16 @@
     <script src="~/js/front.js"></script>
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
-    @RenderSection("Scripts", required: false)
+<script src="~/js/ourownvalidation.js"></script>
+
+
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    })
+</script>
+
+@RenderSection("Scripts", required: false)
 </body>
 </html>
 

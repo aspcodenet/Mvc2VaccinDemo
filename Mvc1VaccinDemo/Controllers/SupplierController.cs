@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Mvc1VaccinDemo.Data;
@@ -10,29 +11,46 @@ using Mvc1VaccinDemo.ViewModels;
 
 namespace Mvc1VaccinDemo.Controllers
 {
-    public class FaserController : BaseController
+    public class SupplierController : BaseController
     {
 
-        public FaserController(ApplicationDbContext dbContext, IKrisInfoService krisInfoService) 
+        public SupplierController(ApplicationDbContext dbContext, IKrisInfoService krisInfoService) 
             :base(dbContext, krisInfoService)
 
         {
         }
 
         // GET
-        public IActionResult Index(string q)
+        public IActionResult Index()
         {
-            var viewModel = new FaserIndexViewModel();
+            return View();
+        }
 
 
-            viewModel.Faser = _dbContext.VaccineringsFaser
-                .Where(r => q == null || r.Name.Contains(q))
-                .Select(dbVacc => new FaserIndexViewModel.FasViewModel
+        public IActionResult ListaOk()
+        {
+            var viewModel = new SupplierListaOkViewModel();
+            viewModel.Suppliers = _dbContext.Suppliers.Where(r => r.UnderInvestigation == false)
+                .Select(s=>new SupplierListItem
                 {
-                    Id = dbVacc.Id,
-                    Name = dbVacc.Name
+                    Country = s.Country,
+                    Id = s.Id,
+                    Namn = s.Name
                 }).ToList();
+            return View(viewModel);
+        }
 
+
+        public IActionResult ListaInvest()
+        {
+            var viewModel = new SupplierListaInvestViewModel();
+            viewModel.Suppliers = _dbContext.Suppliers.Where(r => r.UnderInvestigation == true)
+                .Select(s => new SupplierListItem
+                {
+                    Country = s.Country,
+                    Id = s.Id,
+                    Namn = s.Name
+                }).ToList();
             return View(viewModel);
         }
 

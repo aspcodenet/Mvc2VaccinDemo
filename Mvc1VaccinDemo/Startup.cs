@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Mvc1VaccinDemo.Controllers;
 using Mvc1VaccinDemo.Services;
 using Mvc1VaccinDemo.Services.Krisinformation;
 using Mvc1VaccinDemo.Services.PersonGenerator;
@@ -31,19 +32,24 @@ namespace Mvc1VaccinDemo
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient<IOrderedVaccinService,OrderedVaccinService>();
-            services.AddTransient<IKrisInfoService, KrisInfoService>();
-
-
-            services.AddTransient<IPersonGeneratorService, PersonGeneratorService>();
             
+            services.AddTransient<IPersonGeneratorService, PersonGeneratorService>();
+
+            services.Configure<KrisInfoConfig>(Configuration.GetSection("KrisInfoConfig"));
+
+            services.AddTransient<IKrisInfoService, KrisInfoService>();
+            services.Decorate<IKrisInfoService, CachedKrisInfoService>();
+
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
+            
             services.AddDefaultIdentity<IdentityUser>(
                     options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
             services.AddControllersWithViews();
             services.AddRazorPages();
         }
