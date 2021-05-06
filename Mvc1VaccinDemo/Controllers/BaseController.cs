@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Mvc1VaccinDemo.Data;
 using Mvc1VaccinDemo.Services.Krisinformation;
 using Mvc1VaccinDemo.ViewModels;
+using SharedThings.Data;
 
 namespace Mvc1VaccinDemo.Controllers
 {

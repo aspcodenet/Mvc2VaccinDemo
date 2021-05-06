@@ -6,12 +6,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Mvc1VaccinDemo.Data;
+using SharedThings.Data;
 
 namespace Mvc1VaccinDemo.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210119083727_Added Personer och Vaccineringar")]
-    partial class AddedPersonerochVaccineringar
+    [Migration("20210121091758_AddedTempColumns")]
+    partial class AddedTempColumns
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -272,6 +273,12 @@ namespace Mvc1VaccinDemo.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("AntalDoser")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("EuOkStatus")
                         .HasColumnType("datetime2");

@@ -3,15 +3,18 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Mvc1VaccinDemo.Data;
+using SharedThings.Data;
 
 namespace Mvc1VaccinDemo.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210122141000_VaccinationsFaser")]
+    partial class VaccinationsFaser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -219,21 +222,6 @@ namespace Mvc1VaccinDemo.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Mvc1VaccinDemo.Data.Myndighet", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Myndigheter");
-                });
-
             modelBuilder.Entity("Mvc1VaccinDemo.Data.Person", b =>
                 {
                     b.Property<int>("Id")
@@ -284,14 +272,8 @@ namespace Mvc1VaccinDemo.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Country")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("UnderInvestigation")
-                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -366,9 +348,6 @@ namespace Mvc1VaccinDemo.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("AnsvarigMyndighetId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
@@ -377,8 +356,6 @@ namespace Mvc1VaccinDemo.Data.Migrations
                         .HasMaxLength(30);
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AnsvarigMyndighetId");
 
                     b.ToTable("VaccineringsFaser");
                 });
@@ -457,13 +434,6 @@ namespace Mvc1VaccinDemo.Data.Migrations
                     b.HasOne("Mvc1VaccinDemo.Data.Vaccin", "Vaccin")
                         .WithMany()
                         .HasForeignKey("VaccinId");
-                });
-
-            modelBuilder.Entity("Mvc1VaccinDemo.Data.VaccineringsFas", b =>
-                {
-                    b.HasOne("Mvc1VaccinDemo.Data.Myndighet", "AnsvarigMyndighet")
-                        .WithMany()
-                        .HasForeignKey("AnsvarigMyndighetId");
                 });
 #pragma warning restore 612, 618
         }

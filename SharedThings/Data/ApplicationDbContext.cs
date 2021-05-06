@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Mvc1VaccinDemo.Data;
 
-namespace Mvc1VaccinDemo.Data
+namespace SharedThings.Data
 {
     public class ApplicationDbContext : IdentityDbContext
     {

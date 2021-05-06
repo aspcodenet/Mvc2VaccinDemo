@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Mvc1VaccinDemo.Data;
+using SharedThings.Data;
 
 namespace Mvc1VaccinDemo
 {

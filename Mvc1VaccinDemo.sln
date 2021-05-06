@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mvc1VaccinDemo", "Mvc1VaccinDemo\Mvc1VaccinDemo.csproj", "{57037D27-D12D-4570-B7CA-22B322C8059C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mvc1VaccinDemo", "Mvc1VaccinDemo\Mvc1VaccinDemo.csproj", "{57037D27-D12D-4570-B7CA-22B322C8059C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeneratePersonConsoleApp", "GeneratePersonConsoleApp\GeneratePersonConsoleApp.csproj", "{F6A26971-2239-4ED3-9BCD-E0C7A356E432}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedThings", "SharedThings\SharedThings.csproj", "{7F2D2829-F199-462D-BD18-F9BE74D2F5A0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{57037D27-D12D-4570-B7CA-22B322C8059C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{57037D27-D12D-4570-B7CA-22B322C8059C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{57037D27-D12D-4570-B7CA-22B322C8059C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6A26971-2239-4ED3-9BCD-E0C7A356E432}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6A26971-2239-4ED3-9BCD-E0C7A356E432}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6A26971-2239-4ED3-9BCD-E0C7A356E432}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6A26971-2239-4ED3-9BCD-E0C7A356E432}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F2D2829-F199-462D-BD18-F9BE74D2F5A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F2D2829-F199-462D-BD18-F9BE74D2F5A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F2D2829-F199-462D-BD18-F9BE74D2F5A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F2D2829-F199-462D-BD18-F9BE74D2F5A0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

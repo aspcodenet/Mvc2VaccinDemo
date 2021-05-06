@@ -2,8 +2,9 @@
 using System.Linq;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Mvc1VaccinDemo.Data;
 
-namespace Mvc1VaccinDemo.Data
+namespace SharedThings.Data
 {
     public class DataInitializer
     {

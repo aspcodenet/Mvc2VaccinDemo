@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Mvc1VaccinDemo.Data
+namespace SharedThings.Data
 {
 
 

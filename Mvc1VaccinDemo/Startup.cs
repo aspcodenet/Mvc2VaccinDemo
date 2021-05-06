@@ -15,7 +15,8 @@ using System.Threading.Tasks;
 using Mvc1VaccinDemo.Controllers;
 using Mvc1VaccinDemo.Services;
 using Mvc1VaccinDemo.Services.Krisinformation;
-using Mvc1VaccinDemo.Services.PersonGenerator;
+using SharedThings;
+using SharedThings.Data;
 
 namespace Mvc1VaccinDemo
 {

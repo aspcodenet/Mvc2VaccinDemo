@@ -6,12 +6,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Mvc1VaccinDemo.Data;
+using SharedThings.Data;
 
 namespace Mvc1VaccinDemo.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210211080540_AnsvarigMyndighet")]
-    partial class AnsvarigMyndighet
+    [Migration("20210119083727_Added Personer och Vaccineringar")]
+    partial class AddedPersonerochVaccineringar
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -221,21 +222,6 @@ namespace Mvc1VaccinDemo.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Mvc1VaccinDemo.Data.Myndighet", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Myndigheter");
-                });
-
             modelBuilder.Entity("Mvc1VaccinDemo.Data.Person", b =>
                 {
                     b.Property<int>("Id")
@@ -244,37 +230,24 @@ namespace Mvc1VaccinDemo.Data.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("City")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("EmailAddress")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PersonalNumber")
-                        .HasColumnType("nvarchar(20)")
-                        .HasMaxLength(20);
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PostalCode")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("PreliminaryNextVaccinDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("StreetAddress")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
-
-                    b.Property<int?>("VaccineringsFasId")
-                        .HasColumnType("int");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("VaccineringsFasId");
 
                     b.ToTable("Personer");
                 });
@@ -300,12 +273,6 @@ namespace Mvc1VaccinDemo.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("AntalDoser")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Comment")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("EuOkStatus")
                         .HasColumnType("datetime2");
@@ -353,30 +320,6 @@ namespace Mvc1VaccinDemo.Data.Migrations
                     b.HasIndex("VaccinId");
 
                     b.ToTable("Vaccineringar");
-                });
-
-            modelBuilder.Entity("Mvc1VaccinDemo.Data.VaccineringsFas", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("AnsvarigMyndighetId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(30)")
-                        .HasMaxLength(30);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AnsvarigMyndighetId");
-
-                    b.ToTable("VaccineringsFaser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -430,13 +373,6 @@ namespace Mvc1VaccinDemo.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Mvc1VaccinDemo.Data.Person", b =>
-                {
-                    b.HasOne("Mvc1VaccinDemo.Data.VaccineringsFas", "VaccineringsFas")
-                        .WithMany()
-                        .HasForeignKey("VaccineringsFasId");
-                });
-
             modelBuilder.Entity("Mvc1VaccinDemo.Data.Vaccin", b =>
                 {
                     b.HasOne("Mvc1VaccinDemo.Data.Supplier", "Supplier")
@@ -453,13 +389,6 @@ namespace Mvc1VaccinDemo.Data.Migrations
                     b.HasOne("Mvc1VaccinDemo.Data.Vaccin", "Vaccin")
                         .WithMany()
                         .HasForeignKey("VaccinId");
-                });
-
-            modelBuilder.Entity("Mvc1VaccinDemo.Data.VaccineringsFas", b =>
-                {
-                    b.HasOne("Mvc1VaccinDemo.Data.Myndighet", "AnsvarigMyndighet")
-                        .WithMany()
-                        .HasForeignKey("AnsvarigMyndighetId");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Mvc1VaccinDemo.Data
+﻿namespace SharedThings.Data
 {
     public class Myndighet
     {

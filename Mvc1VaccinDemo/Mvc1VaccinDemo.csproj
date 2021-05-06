@@ -21,6 +21,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SharedThings\SharedThings.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Update="Views\Supplier\Index.cshtml">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
@@ -28,6 +32,11 @@
     <Content Update="wwwroot\files\backup.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Data\" />
+    <Folder Include="Services\PersonGenerator\" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Mvc1VaccinDemo.Data
+namespace SharedThings.Data
 {
     public class Vaccinering
     {

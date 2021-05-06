@@ -1,40 +1,10 @@
 ﻿using System;
 using System.Net.Http;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
-namespace Mvc1VaccinDemo.Services.PersonGenerator
+namespace SharedThings
 {
-
-    public class GeneratedPerson
-    {
-        public string Name { get; set; }
-        public string PersonalNumber { get; set; }
-        public string EmailAddress { get; set; }
-        public string StreetAddress { get; set; }
-        public string City { get; set; }
-        public int PostalCode { get; set; }
-
-    }
-
-    public class NameFakePerson
-    {
-        public string Name { get; set; }
-        public string Birth_data { get; set; }
-        public string email_u { get; set; }
-        public string email_d { get; set; }
-        public string Address { get; set; }
-
-
-
-    }
-
-    public interface IPersonGeneratorService
-    {
-        GeneratedPerson GenerateFakePerson();
-    }
-
-    class PersonGeneratorService : IPersonGeneratorService
+    public class PersonGeneratorService : IPersonGeneratorService
     {
         public GeneratedPerson GenerateFakePerson()
         {
@@ -59,4 +29,5 @@ namespace Mvc1VaccinDemo.Services.PersonGenerator
                    "-1111";
         }
     }
+
 }

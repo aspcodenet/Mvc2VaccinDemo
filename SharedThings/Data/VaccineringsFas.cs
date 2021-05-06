@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Mvc1VaccinDemo.Data
+namespace SharedThings.Data
 {
     public class VaccineringsFas
     {
