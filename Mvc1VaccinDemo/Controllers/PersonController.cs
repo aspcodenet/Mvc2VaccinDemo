@@ -184,13 +184,44 @@ namespace Mvc1VaccinDemo.Controllers
             viewModel.PostalCode = dbPerson.PostalCode;
             viewModel.PreliminaryNextVaccinDate = dbPerson.PreliminaryNextVaccinDate;
             viewModel.StreetAddress = dbPerson.StreetAddress;
-            
-            if(dbPerson.VaccineringsFas != null)
+            viewModel.Description = dbPerson.Description;
+
+
+            if (dbPerson.VaccineringsFas != null)
                 viewModel.SelectedVaccineringsFasId = dbPerson.VaccineringsFas.Id;
             viewModel.AllaVaccineringsFaser = GetAllVaccineringsFaserAsListItems(); 
 
             return View(viewModel);
         }
+
+
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public IActionResult Edit(int Id, PersonEditViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var dbPerson = _dbContext.Personer.Include(r => r.VaccineringsFas).First(r => r.Id == Id);
+
+                dbPerson.Name = model.Name;
+                dbPerson.EmailAddress = model.EmailAddress;
+                dbPerson.PersonalNumber = model.PersonalNumber;
+                dbPerson.City = model.City;
+                dbPerson.PostalCode = model.PostalCode;
+                dbPerson.PreliminaryNextVaccinDate = model.PreliminaryNextVaccinDate;
+                dbPerson.StreetAddress = model.StreetAddress;
+                dbPerson.Description = model.Description;
+                _dbContext.SaveChanges();
+                return RedirectToAction("Index");
+
+            }
+            model.AllaVaccineringsFaser = GetAllVaccineringsFaserAsListItems();
+            return View(model);
+
+        }
+
+
 
         private List<SelectListItem> GetAllVaccineringsFaserAsListItems()
         {

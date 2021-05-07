@@ -30,5 +30,10 @@ namespace SharedThings.Data
 
 
         public List<Vaccinering> Vaccinering { get; set; }
+
+        [MaxLength(512)]
+        public string Description { get; set; }
+
+
     }
 }

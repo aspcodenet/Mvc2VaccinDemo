@@ -44,7 +44,9 @@ namespace Mvc1VaccinDemo
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                    Configuration.GetConnectionString("DefaultConnection"),
+                    op=>op.MigrationsAssembly("SharedThings")
+                    ));
             
             services.AddDefaultIdentity<IdentityUser>(
                     options => options.SignIn.RequireConfirmedAccount = true)

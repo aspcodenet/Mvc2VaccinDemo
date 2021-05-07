@@ -38,6 +38,6 @@ namespace Mvc1VaccinDemo.ViewModels
 
         public int SelectedVaccineringsFasId { get; set; }
         public List<SelectListItem> AllaVaccineringsFaser { get; set; }
-
+        public string Description { get; set; }
     }
 }
