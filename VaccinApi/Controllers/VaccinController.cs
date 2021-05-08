@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +13,8 @@ namespace VaccinApi.Controllers
     [EnableCors("AllowAll")]
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes =
+        JwtBearerDefaults.AuthenticationScheme)]
     public class VaccinController : ControllerBase
     {
         private readonly ApplicationDbContext _dbContext;
@@ -31,8 +35,10 @@ namespace VaccinApi.Controllers
         [Route("{id}")]
         [HttpGet]
         [SwaggerOperation(OperationId = "GetOne")]
+        [Authorize(Roles = "Admin")]
         public ActionResult<Vaccin> GetSingle(int id)
         {
+            var user = User;
             var vaccin = _dbContext.Vacciner.Include(e => e.Supplier).FirstOrDefault(e => e.Id == id);
             if (vaccin == null) return NotFound();
 

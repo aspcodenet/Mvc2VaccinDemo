@@ -9,14 +9,20 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using SharedThings.Data;
 
 namespace VaccinApi
 {
     public class Startup
     {
+        private string SecretKey = "312121312<znxmb4";
+        private string Issuer = "stefanvaccinsajt";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -31,6 +37,22 @@ namespace VaccinApi
             {
                 c.EnableAnnotations();
             });
+
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        ValidateLifetime = false,
+                        ValidateIssuerSigningKey = false,
+                        ValidIssuer = Issuer,
+                        ValidAudience = Issuer,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SecretKey))
+                    };
+                });
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
@@ -62,7 +84,7 @@ namespace VaccinApi
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            app.UseAuthentication();
 
             app.UseSwagger();
 
