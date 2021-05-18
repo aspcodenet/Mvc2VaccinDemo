@@ -30,6 +30,7 @@ namespace Mvc1VaccinDemo.Controllers
             _signInManager = signInManager;
         }
 
+        [ResponseCache(Duration = 29, Location = ResponseCacheLocation.Any)]
         public IActionResult Index()
         {
             var viewModel = new HomeIndexViewModel();

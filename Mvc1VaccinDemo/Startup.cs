@@ -90,6 +90,7 @@ namespace Mvc1VaccinDemo
 
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseResponseCaching();
 
             app.UseEndpoints(endpoints =>
             {
