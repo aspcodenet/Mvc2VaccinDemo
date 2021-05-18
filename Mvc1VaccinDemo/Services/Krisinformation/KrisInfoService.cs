@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -12,21 +13,29 @@ namespace Mvc1VaccinDemo.Services.Krisinformation
     public class CachedKrisInfoService : IKrisInfoService
     {
         private readonly IKrisInfoService _inner;
-        private static DateTime lastFetched;
-        private static List<KrisInfo> cachedValue;
-        public CachedKrisInfoService(IKrisInfoService inner)
+        private readonly IMemoryCache _cache;
+
+        public CachedKrisInfoService(IKrisInfoService inner, IMemoryCache cache)
         {
             _inner = inner;
+            _cache = cache;
         }
         public List<KrisInfo> GetAllKrisInformation()
         {
-            if ((DateTime.Now - lastFetched).TotalSeconds > 60)
-            {
-                cachedValue = _inner.GetAllKrisInformation();
-                lastFetched = DateTime.Now;
-            }
+            List<KrisInfo> list;
+            if (_cache.TryGetValue("KrisInfo", out list))
+                return list;
+            list = _inner.GetAllKrisInformation();
 
-            return cachedValue;
+            _cache.Set("KrisInfo", list, DateTime.Now.AddSeconds(60));
+            return list;
+            //if ((DateTime.Now - lastFetched).TotalSeconds > 60)
+            //{
+            //    cachedValue = _inner.GetAllKrisInformation();
+            //    lastFetched = DateTime.Now;
+            //}
+
+            //return cachedValue;
         }
 
         public List<KrisInfo> GetEmergencies()

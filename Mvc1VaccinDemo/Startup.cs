@@ -42,6 +42,8 @@ namespace Mvc1VaccinDemo
             services.Decorate<IKrisInfoService, CachedKrisInfoService>();
 
 
+            services.AddMemoryCache(); //Container -> IMemoryCache
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection"),

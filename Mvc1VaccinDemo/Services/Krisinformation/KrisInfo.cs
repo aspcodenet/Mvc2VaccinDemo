@@ -1,7 +1,11 @@
-﻿namespace Mvc1VaccinDemo.Services.Krisinformation
+﻿using System;
+using System.Collections.Generic;
+
+namespace Mvc1VaccinDemo.Services.Krisinformation
 {
     public class KrisInfo
     {
+        public List<DateTime> Datum { get; set; }
         public string Id { get; set; }
         public string Title { get; set; }
         public string Text { get; set; }

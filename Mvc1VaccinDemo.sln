@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeneratePersonConsoleApp", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedThings", "SharedThings\SharedThings.csproj", "{7F2D2829-F199-462D-BD18-F9BE74D2F5A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VaccinApi", "VaccinApi\VaccinApi.csproj", "{77D92211-FEA5-4B0A-B945-293A8FD6EFDD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VaccinApi", "VaccinApi\VaccinApi.csproj", "{77D92211-FEA5-4B0A-B945-293A8FD6EFDD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mvc1VaccinDemo.Tests", "Mvc1VaccinDemo.Tests\Mvc1VaccinDemo.Tests.csproj", "{610282E4-0000-4FD7-945F-D10DB4DADC24}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{77D92211-FEA5-4B0A-B945-293A8FD6EFDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77D92211-FEA5-4B0A-B945-293A8FD6EFDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77D92211-FEA5-4B0A-B945-293A8FD6EFDD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{610282E4-0000-4FD7-945F-D10DB4DADC24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{610282E4-0000-4FD7-945F-D10DB4DADC24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{610282E4-0000-4FD7-945F-D10DB4DADC24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{610282E4-0000-4FD7-945F-D10DB4DADC24}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

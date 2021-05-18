@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Server.HttpSys;
+using Microsoft.Extensions.Caching.Memory;
 using Mvc1VaccinDemo.Data;
 using Mvc1VaccinDemo.Services.Krisinformation;
 using Mvc1VaccinDemo.ViewModels;
