@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using Microsoft.AspNetCore.Mvc;
 using Mvc1VaccinDemo.Services.Krisinformation;
 using Mvc1VaccinDemo.ViewModels;
@@ -12,6 +14,22 @@ namespace Mvc1VaccinDemo.Controllers
         public HejController(IKrisInfoService service)
         {
             _service = service;
+        }
+
+
+
+        public class Highscore
+        {
+            public string Namn { get; set; }
+            public int Points { get; set; }
+        }
+        public IActionResult GetHighscore()
+        {
+            var l = new List<Highscore>();
+            l.Add(new Highscore{Namn="Stefan", Points = 123});
+            l.Add(new Highscore { Namn = "Oliver", Points = 124 });
+            l.Add(new Highscore { Namn = "Josefine", Points = 133 });
+            return Json(l);
         }
 
 

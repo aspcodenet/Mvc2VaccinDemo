@@ -13,8 +13,8 @@ namespace VaccinApi.Controllers
     [EnableCors("AllowAll")]
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(AuthenticationSchemes =
-        JwtBearerDefaults.AuthenticationScheme)]
+    //[Authorize(AuthenticationSchemes =
+    //    JwtBearerDefaults.AuthenticationScheme)]
     public class VaccinController : ControllerBase
     {
         private readonly ApplicationDbContext _dbContext;
