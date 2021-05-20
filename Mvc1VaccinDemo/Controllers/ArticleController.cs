@@ -15,6 +15,8 @@ namespace Mvc1VaccinDemo.Controllers
         }
 
 
+
+
         [ResponseCache(Duration = 29, VaryByQueryKeys = new[] { "id" })]
         public IActionResult Show(string id)
         {
