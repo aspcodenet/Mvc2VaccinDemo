@@ -5,6 +5,7 @@ using Azure.Search.Documents;
 using Azure.Search.Documents.Indexes;
 using Azure.Search.Documents.Indexes.Models;
 using Azure.Search.Documents.Models;
+using SharedThings;
 using SharedThings.Data;
 
 namespace GeneratePersonConsoleApp
@@ -15,37 +16,13 @@ namespace GeneratePersonConsoleApp
     }
 
 
-    public class PersonInAzure
-    {
-        [SimpleField(IsKey = true, IsFilterable = true)]
-        public string Id { get; set; }
-
-        [SearchableField(IsSortable = true)]
-        public string Namn { get; set; }
-
-        [SearchableField(IsSortable = true)]
-        public string StreetAddress { get; set; }
-
-        [SearchableField(IsSortable = true)]
-        public string City { get; set; }
-
-
-        
-        //Personbeskrivning mwed vanlig text - stol/stolar osv sov
-
-        [SearchableField(AnalyzerName = LexicalAnalyzerName.Values.SvLucene)]
-        public string Description { get; set; }
-
-    }
-
-
 
 
 
     class AzureUpdater : IAzureUpdater
     {
         private readonly ApplicationDbContext _dbContext;
-        string indexName = "personerna";
+        string indexName = "personerna1";
         private string searchUrl = "https://stefanpersonsearch.search.windows.net";
         private string key = "F4B85AB85B8662E8B66EACDF1B98E581";
 

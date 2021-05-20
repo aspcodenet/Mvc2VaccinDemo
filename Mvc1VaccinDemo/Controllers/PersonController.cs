@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using Azure;
+using Azure.Search.Documents;
+using Azure.Search.Documents.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -71,44 +74,61 @@ namespace Mvc1VaccinDemo.Controllers
         {
            var viewModel = new PersonIndexViewModel();
 
-           var query = _dbContext.Personer
-               .Where(r => q == null || r.Name.Contains(q) || r.PersonalNumber.Contains(q));
+           var searchClient = new SearchClient(new Uri("https://stefanpersonsearch.search.windows.net"),
+               "personerna", new AzureKeyCredential("F4B85AB85B8662E8B66EACDF1B98E581"));
+
+
+           int pageSize = 10;
+
+            var searchOptions = new SearchOptions
+           {
+               OrderBy = { "City desc" }, // Build from sortField och sortOrder
+               Skip = (page-1)*10,
+               Size = pageSize,
+               IncludeTotalCount = true
+           };
+
+
+           var searchResult = searchClient.Search<PersonInAzure>(q, searchOptions);
+
+
+            //var query = _dbContext.Personer
+            //   .Where(r => q == null || r.Name.Contains(q) || r.PersonalNumber.Contains(q));
 
 
            //ANTAL POSTER SOM MATCHAR FILTRET
-           int totalRowCount = query.Count();
+           long totalRowCount = searchResult.Value.TotalCount.Value;
 
-            if (string.IsNullOrEmpty(sortField))
-               sortField = "Namn";
-           if (string.IsNullOrEmpty(sortOrder))
-               sortOrder = "asc";
+           // if (string.IsNullOrEmpty(sortField))
+           //    sortField = "Namn";
+           //if (string.IsNullOrEmpty(sortOrder))
+           //    sortOrder = "asc";
 
-           if (sortField == "Namn")
-           {
-               if(sortOrder == "asc") 
-                   query = query.OrderBy(y => y.Name);
-               else
-                   query = query.OrderByDescending(y => y.Name);
-            }
+           //if (sortField == "Namn")
+           //{
+           //    if(sortOrder == "asc") 
+           //        query = query.OrderBy(y => y.Name);
+           //    else
+           //        query = query.OrderByDescending(y => y.Name);
+           // }
 
-           if (sortField == "Email")
-           {
-               if (sortOrder == "asc")
-                    query = query.OrderBy(y => y.EmailAddress);
-               else
-                   query = query.OrderByDescending(y => y.EmailAddress);
-            }
+           //if (sortField == "Email")
+           //{
+           //    if (sortOrder == "asc")
+           //         query = query.OrderBy(y => y.EmailAddress);
+           //    else
+           //        query = query.OrderByDescending(y => y.EmailAddress);
+           // }
 
-           if (sortField == "Personnummer")
-           {
-               if (sortOrder == "asc")
-                    query = query.OrderBy(y => y.PersonalNumber);
-               else
-                   query = query.OrderByDescending(y => y.PersonalNumber);
+           //if (sortField == "Personnummer")
+           //{
+           //    if (sortOrder == "asc")
+           //         query = query.OrderBy(y => y.PersonalNumber);
+           //    else
+           //        query = query.OrderByDescending(y => y.PersonalNumber);
 
-            }
+           // }
 
-           int pageSize = 10;
 
            var pageCount = (double)totalRowCount / pageSize;
            viewModel.TotalPages = (int)Math.Ceiling(pageCount);
@@ -118,21 +138,18 @@ namespace Mvc1VaccinDemo.Controllers
 
             //Skip - hoppa över så många
             //Take - sen ta så många
+            var listOfIds = searchResult.Value.GetResults().Select(r => Convert.ToInt32(r.Document.Id)).ToList();
 
-            int howManyRecordsToSkip = (page - 1) * pageSize;  // Sida 1 ->  0
+            // 12, 56,3,45,678
 
-            query = query.Skip(howManyRecordsToSkip).Take(pageSize);
-
-
-
-            viewModel.Personer = query
-                .Select(person => new PersonViewModel
-                {
-                    Id = person.Id,
-                    Name = person.Name,
-                    EmailAddress = person.EmailAddress,
-                    PersonalNumber = person.PersonalNumber
-                }).ToList();
+            //viewModel.Personer = _dbContext.Personer.Where(q=>listOfIds.Contains(q.Id))
+            //    .Select(person => new PersonViewModel
+            //    {
+            //        Id = person.Id,
+            //        Name = person.Name,
+            //        EmailAddress = person.EmailAddress,
+            //        PersonalNumber = person.PersonalNumber
+            //    }).ToList();
 
             //viewModel.Personer = query
             //    .Select(person => new PersonViewModel
@@ -212,6 +229,9 @@ namespace Mvc1VaccinDemo.Controllers
                 dbPerson.PreliminaryNextVaccinDate = model.PreliminaryNextVaccinDate;
                 dbPerson.StreetAddress = model.StreetAddress;
                 dbPerson.Description = model.Description;
+
+                UpdateSearchIndex(dbPerson);
+
                 _dbContext.SaveChanges();
                 return RedirectToAction("Index");
 
@@ -221,6 +241,25 @@ namespace Mvc1VaccinDemo.Controllers
 
         }
 
+        private void UpdateSearchIndex(Person person)
+        {
+            var searchClient = new SearchClient(new Uri("https://stefanpersonsearch.search.windows.net"),
+                "personerna", new AzureKeyCredential("F4B85AB85B8662E8B66EACDF1B98E581"));
+
+            var batch = new IndexDocumentsBatch<PersonInAzure>();
+            var personInAzure = new PersonInAzure
+            {
+                City = person.City,
+                Description = person.Description,
+                Id = person.Id.ToString(),
+                Namn = person.Name,
+                StreetAddress = person.StreetAddress
+            };
+            batch.Actions.Add(new IndexDocumentsAction<PersonInAzure>(IndexActionType.MergeOrUpload,
+                personInAzure));
+
+            IndexDocumentsResult result = searchClient.IndexDocuments(batch);
+        }
 
 
         private List<SelectListItem> GetAllVaccineringsFaserAsListItems()

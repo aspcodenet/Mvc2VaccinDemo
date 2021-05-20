@@ -1,6 +1,7 @@
 ﻿using System;
 using Azure;
 using Azure.Search.Documents;
+using SharedThings;
 
 namespace GeneratePersonConsoleApp
 {
@@ -32,7 +33,7 @@ namespace GeneratePersonConsoleApp
                 {
                     OrderBy = { "City desc" },
                     Skip = 0,
-                    Size = 2,
+                    Size = 10,
                     IncludeTotalCount = true
                 };
 
