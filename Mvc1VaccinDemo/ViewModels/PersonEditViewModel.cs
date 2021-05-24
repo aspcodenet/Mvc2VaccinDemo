@@ -21,7 +21,7 @@ namespace Mvc1VaccinDemo.ViewModels
         [MaxLength(100)]
         [DataType(DataType.EmailAddress)]
         [EmailAddress]
-        public string EmailAddress { get; set; }
+        public string Email { get; set; }
 
         [MaxLength(100)]
         public string StreetAddress { get; set; }

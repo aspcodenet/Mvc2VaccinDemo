@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Mvc1VaccinDemo.Controllers;
+using Mvc1VaccinDemo.Infrastructure.Profiles;
 using Mvc1VaccinDemo.Services;
 using Mvc1VaccinDemo.Services.Krisinformation;
 using SharedThings;
@@ -40,6 +41,8 @@ namespace Mvc1VaccinDemo
 
             services.AddTransient<IKrisInfoService, KrisInfoService>();
             services.Decorate<IKrisInfoService, CachedKrisInfoService>();
+
+            services.AddAutoMapper(typeof(PersonProfile));
 
 
             services.AddMemoryCache(); //Container -> IMemoryCache

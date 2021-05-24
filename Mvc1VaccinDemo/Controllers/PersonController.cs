@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using AutoMapper;
 using Azure;
 using Azure.Search.Documents;
 using Azure.Search.Documents.Models;
@@ -21,12 +22,14 @@ namespace Mvc1VaccinDemo.Controllers
     public class PersonController : BaseController
     {
         private readonly IPersonGeneratorService _personGeneratorService;
+        private readonly IMapper _mapper;
 
         public PersonController(ApplicationDbContext dbContext, IKrisInfoService krisInfoService,
-            IPersonGeneratorService personGeneratorService)
+            IPersonGeneratorService personGeneratorService, IMapper mapper)
             : base(dbContext, krisInfoService)
         {
             _personGeneratorService = personGeneratorService;
+            _mapper = mapper;
         }
 
 
@@ -68,88 +71,139 @@ namespace Mvc1VaccinDemo.Controllers
         }
 
 
+
+        public class LocationFilter
+        {
+            public string Name { get; set; }
+            public int pageSize { get; set; }
+            public int pageIndex { get; set; }
+            public string sortOrder { get; set; }
+            public string sortField { get; set; }
+        }
+        private LocationFilter GetFilter()
+        {
+            var filter = Request.Query;
+
+            return new LocationFilter
+            {
+                Name = filter["Name"],
+                pageSize = Convert.ToInt32(filter["pageSize"]),
+                pageIndex = Convert.ToInt32(filter["pageIndex"]),
+                sortOrder = filter.ContainsKey("sortOrder") ? filter["sortOrder"].ToString() : "",
+                sortField = filter.ContainsKey("sortField") ? filter["sortField"].ToString() : ""
+            };
+        }
+
+        public class Result<T>
+        {
+            public T[] data { get; set; }
+            public int itemsCount { get; set; }
+        }
+
+
+
+
+        public IActionResult PersonDataSource()
+        {
+            var filter = GetFilter();
+
+            var result = _dbContext.Personer.Where(x =>
+                (string.IsNullOrEmpty(filter.Name) || x.Name.Contains(filter.Name))
+            );
+
+            //Sorting
+            if (filter.sortField == "name")
+            {
+                if(filter.sortOrder == "asc")
+                    result = result.OrderBy(p => p.Name);
+                else
+                    result = result.OrderByDescending(p => p.Name);
+            }
+
+
+            var result2 = _mapper.Map<IEnumerable<PersonEditViewModel>>(result);
+
+            var data2 = result2.ToArray();
+            return Ok(new Result<PersonEditViewModel>
+            {
+                data = data2.Skip(filter.pageSize * (filter.pageIndex - 1)).Take(filter.pageSize).ToArray(),
+                itemsCount = data2.Length
+            });
+
+
+        }
+
+
+
+
         // GET
         [Authorize(Roles = "Admin, Nurse")]
         public IActionResult Index(string q, string sortField, string sortOrder, int page = 1)
         {
-           var viewModel = new PersonIndexViewModel();
+            var viewModel = new PersonIndexViewModel();
 
-           var searchClient = new SearchClient(new Uri("https://stefanpersonsearch.search.windows.net"),
-               "personerna", new AzureKeyCredential("F4B85AB85B8662E8B66EACDF1B98E581"));
-
-
-           int pageSize = 10;
-
-            var searchOptions = new SearchOptions
-           {
-               OrderBy = { "City desc" }, // Build from sortField och sortOrder
-               Skip = (page-1)*10,
-               Size = pageSize,
-               IncludeTotalCount = true
-           };
+            var query = _dbContext.Personer
+                .Where(r => q == null || r.Name.Contains(q) || r.PersonalNumber.Contains(q));
 
 
-           var searchResult = searchClient.Search<PersonInAzure>(q, searchOptions);
+            //ANTAL POSTER SOM MATCHAR FILTRET
+            int totalRowCount = query.Count();
 
+            if (string.IsNullOrEmpty(sortField))
+                sortField = "Namn";
+            if (string.IsNullOrEmpty(sortOrder))
+                sortOrder = "asc";
 
-            //var query = _dbContext.Personer
-            //   .Where(r => q == null || r.Name.Contains(q) || r.PersonalNumber.Contains(q));
+            if (sortField == "Namn")
+            {
+                if (sortOrder == "asc")
+                    query = query.OrderBy(y => y.Name);
+                else
+                    query = query.OrderByDescending(y => y.Name);
+            }
 
+            if (sortField == "Email")
+            {
+                if (sortOrder == "asc")
+                    query = query.OrderBy(y => y.EmailAddress);
+                else
+                    query = query.OrderByDescending(y => y.EmailAddress);
+            }
 
-           //ANTAL POSTER SOM MATCHAR FILTRET
-           long totalRowCount = searchResult.Value.TotalCount.Value;
+            if (sortField == "Personnummer")
+            {
+                if (sortOrder == "asc")
+                    query = query.OrderBy(y => y.PersonalNumber);
+                else
+                    query = query.OrderByDescending(y => y.PersonalNumber);
 
-           // if (string.IsNullOrEmpty(sortField))
-           //    sortField = "Namn";
-           //if (string.IsNullOrEmpty(sortOrder))
-           //    sortOrder = "asc";
+            }
 
-           //if (sortField == "Namn")
-           //{
-           //    if(sortOrder == "asc") 
-           //        query = query.OrderBy(y => y.Name);
-           //    else
-           //        query = query.OrderByDescending(y => y.Name);
-           // }
+            int pageSize = 10;
 
-           //if (sortField == "Email")
-           //{
-           //    if (sortOrder == "asc")
-           //         query = query.OrderBy(y => y.EmailAddress);
-           //    else
-           //        query = query.OrderByDescending(y => y.EmailAddress);
-           // }
-
-           //if (sortField == "Personnummer")
-           //{
-           //    if (sortOrder == "asc")
-           //         query = query.OrderBy(y => y.PersonalNumber);
-           //    else
-           //        query = query.OrderByDescending(y => y.PersonalNumber);
-
-           // }
-
-
-           var pageCount = (double)totalRowCount / pageSize;
-           viewModel.TotalPages = (int)Math.Ceiling(pageCount);
+            var pageCount = (double)totalRowCount / pageSize;
+            viewModel.TotalPages = (int)Math.Ceiling(pageCount);
 
 
 
 
             //Skip - hoppa över så många
             //Take - sen ta så många
-            var listOfIds = searchResult.Value.GetResults().Select(r => Convert.ToInt32(r.Document.Id)).ToList();
 
-            // 12, 56,3,45,678
+            int howManyRecordsToSkip = (page - 1) * pageSize;  // Sida 1 ->  0
 
-            //viewModel.Personer = _dbContext.Personer.Where(q=>listOfIds.Contains(q.Id))
-            //    .Select(person => new PersonViewModel
-            //    {
-            //        Id = person.Id,
-            //        Name = person.Name,
-            //        EmailAddress = person.EmailAddress,
-            //        PersonalNumber = person.PersonalNumber
-            //    }).ToList();
+            query = query.Skip(howManyRecordsToSkip).Take(pageSize);
+
+
+
+            viewModel.Personer = query
+                .Select(person => new PersonViewModel
+                {
+                    Id = person.Id,
+                    Name = person.Name,
+                    EmailAddress = person.EmailAddress,
+                    PersonalNumber = person.PersonalNumber
+                }).ToList();
 
             //viewModel.Personer = query
             //    .Select(person => new PersonViewModel
@@ -193,15 +247,22 @@ namespace Mvc1VaccinDemo.Controllers
 
             var dbPerson = _dbContext.Personer.Include(r=>r.VaccineringsFas).First(r => r.Id == Id);
 
-            viewModel.Id = dbPerson.Id;
-            viewModel.Name = dbPerson.Name;
-            viewModel.EmailAddress = dbPerson.EmailAddress;
-            viewModel.PersonalNumber = dbPerson.PersonalNumber;
-            viewModel.City = dbPerson.City;
-            viewModel.PostalCode = dbPerson.PostalCode;
-            viewModel.PreliminaryNextVaccinDate = dbPerson.PreliminaryNextVaccinDate;
-            viewModel.StreetAddress = dbPerson.StreetAddress;
-            viewModel.Description = dbPerson.Description;
+            viewModel = _mapper.Map<PersonEditViewModel>(dbPerson);
+
+
+
+
+            //var listOfViewwModels = _mapper.Map<IEnumerable<Person>>(_dbContext.Personer).ToList();
+
+            //viewModel.Id = dbPerson.Id;
+            //viewModel.Name = dbPerson.Name;
+            //viewModel.Email = dbPerson.EmailAddress;
+            //viewModel.PersonalNumber = dbPerson.PersonalNumber;
+            //viewModel.City = dbPerson.City;
+            //viewModel.PostalCode = dbPerson.PostalCode;
+            //viewModel.PreliminaryNextVaccinDate = dbPerson.PreliminaryNextVaccinDate;
+            //viewModel.StreetAddress = dbPerson.StreetAddress;
+            //viewModel.Description = dbPerson.Description;
 
 
             if (dbPerson.VaccineringsFas != null)
@@ -221,14 +282,16 @@ namespace Mvc1VaccinDemo.Controllers
             {
                 var dbPerson = _dbContext.Personer.Include(r => r.VaccineringsFas).First(r => r.Id == Id);
 
-                dbPerson.Name = model.Name;
-                dbPerson.EmailAddress = model.EmailAddress;
-                dbPerson.PersonalNumber = model.PersonalNumber;
-                dbPerson.City = model.City;
-                dbPerson.PostalCode = model.PostalCode;
-                dbPerson.PreliminaryNextVaccinDate = model.PreliminaryNextVaccinDate;
-                dbPerson.StreetAddress = model.StreetAddress;
-                dbPerson.Description = model.Description;
+                dbPerson = _mapper.Map<Person>(model);
+
+                //dbPerson.Name = model.Name;
+                //dbPerson.EmailAddress = model.Email;
+                //dbPerson.PersonalNumber = model.PersonalNumber;
+                //dbPerson.City = model.City;
+                //dbPerson.PostalCode = model.PostalCode;
+                //dbPerson.PreliminaryNextVaccinDate = model.PreliminaryNextVaccinDate;
+                //dbPerson.StreetAddress = model.StreetAddress;
+                //dbPerson.Description = model.Description;
 
                 UpdateSearchIndex(dbPerson);
 

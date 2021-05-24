@@ -5,262 +5,100 @@
 @{
     ViewData["Title"] = "Personer";
 }
-<section class="py-5">
-
-    <div class="row">
-        <div class="col-lg-12 mb-5">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="h6 text-uppercase mb-0">Sök</h3>
-                </div>
-                <div class="card-body">
 
 
-                    <form method="get" asp-controller="Person" asp-action="Index">
-
-                        <div class="form-row align-items-center">
-                            <div class="col-auto">
-                                <input type="text" class="form-control" asp-for="q">
-                            </div>
-                            <div class="col-auto">
-                                <button type="submit" class="btn btn-primary">Sök</button>
-                            </div>
-                        </div>
-
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+<div id="jsGrid"></div>
 
 
-    <div id="selectPersonPlaceHolder">
-
-    </div>
-
-
-    <div class="row">
-
-        @*<form >
-
-            <div class="form-row align-items-center">
-                <div class="col-auto">
-                    <label for="SearchWord">Sök:</label>
-                </div>
-                <div class="col-auto">
-                    <input type="text" class="form-control" asp-for="SearchWord">
-                </div>
-                <div class="col-auto">
-                    <button type="submit" class="btn btn-primary">Sök</button>
-                </div>
-            </div>
-
-        </form>*@
-
-
-        <div class="col-lg-12 mb-5">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="h6 text-uppercase mb-0">Person</h3>
-                </div>
-                <div class="card-body">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th scope="col">
-                                    <a asp-controller="Person"
-                                       asp-action="Index"
-                                       asp-route-sortField="Personnummer"
-                                       asp-route-sortOrder="@(Model.SortField == "Personnummer" ? Model.OppositeSortOrder : "" )"
-                                       asp-route-q="@Model.q">
-                                        Personnummer
-                                        @if (Model.SortField == "Personnummer")
-                                        {
-                                            if (Model.SortOrder == "asc")
-                                            {
-                                                <i class="fas fa-sort-down"></i>
-                                            }
-                                            else
-                                            {
-                                                <i class="fas fa-sort-up"></i>
-                                            }
-
-                                        }
-
-                                    </a>
-                                </th>
-                                <th scope="col">
-
-                                    <a asp-controller="Person"
-                                       asp-action="Index"
-                                       asp-route-sortField="Namn"
-                                       asp-route-sortOrder="@(Model.SortField == "Namn" ? Model.OppositeSortOrder : "" )"
-                                       asp-route-q="@Model.q">
-                                        Namn
-                                        @if (Model.SortField == "Namn")
-                                        {
-                                            if (Model.SortOrder == "asc")
-                                            {
-                                                <i class="fas fa-sort-down"></i>
-                                            }
-                                            else
-                                            {
-                                                <i class="fas fa-sort-up"></i>
-                                            }
-
-                                        }
-
-                                    </a>
-                                </th>
-                                <th scope="col">
-                                    <a asp-controller="Person"
-                                       asp-action="Index"
-                                       asp-route-sortField="Email"
-                                       asp-route-sortOrder="@(Model.SortField == "Email" ? Model.OppositeSortOrder : "" )"
-                                       asp-route-q="@Model.q">
-                                        Email
-                                        @if (Model.SortField == "Email")
-                                        {
-                                            if (Model.SortOrder == "asc")
-                                            {
-                                                <i class="fas fa-sort-down"></i>
-                                            }
-                                            else
-                                            {
-                                                <i class="fas fa-sort-up"></i>
-                                            }
-
-                                        }
-                                    </a>
-                                </th>
-                                <th scope="col"></th>
-                                <th scope="col"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var personViewModel in Model.Personer)
-                            {
-                                <tr>
-                                    <td>@personViewModel.PersonalNumber</td>
-                                    <td>@personViewModel.Name</td>
-                                    <td>@personViewModel.EmailAddress</td>
-                                    <td><a href="#" onclick="FetchPerson(@personViewModel.Id); return false;" class="btn btn-secondary active" role="button" aria-pressed="true">Show details</a></td>
-                                    <td><a asp-controller="Person" asp-action="Edit" asp-route-Id="@personViewModel.Id" class="btn btn-secondary active" role="button" aria-pressed="true">Edit</a></td>
-                                </tr>
-                            }
-
-                        </tbody>
-                        <tfoot>
-                        <tr>
-                            <td colspan="5">
-                                <nav aria-label="...">
-                                    <ul class="pagination">
-                                        <li class="page-item @(Model.Page == 1 ? "disabled" : "")">
-
-                                            <a class="page-link"
-                                               asp-controller="Person"
-                                               asp-action="Index"
-                                               asp-route-sortField="@Model.SortField"
-                                               asp-route-sortOrder="@Model.SortOrder"
-                                               asp-route-page="@(Model.Page - 1)"
-                                               asp-route-q="@Model.q"                                            
-                                            
-                                               >Previous</a>
-                                        </li>
-                                        
-                                        
-                                        @for (int pa = 1; pa <= Model.TotalPages; pa++)
-                                        {
-
-                                            <li class="page-item @(pa == Model.Page ? "active" : "")">
-                                                <a class="page-link"
-                                                   asp-controller="Person"
-                                                   asp-action="Index"
-                                                   asp-route-sortField="@Model.SortField"
-                                                   asp-route-sortOrder="@Model.SortOrder"
-                                                   asp-route-page="@pa"
-                                                   asp-route-q="@Model.q">
-                                                    @pa
-                                                </a>
-                                            </li>
-                                        }
-                                        
-                                        
-
-                                        <li class="page-item @(Model.Page == Model.TotalPages  ? "disabled" : "")">
-                                            <a class="page-link" 
-                                               asp-controller="Person"
-                                               asp-action="Index"
-                                               asp-route-sortField="@Model.SortField"
-                                               asp-route-sortOrder="@Model.SortOrder"
-                                               asp-route-page="@(Model.Page + 1)"
-                                               asp-route-q="@Model.q">Next</a>
-                                        </li>
-                                    </ul>
-                                </nav>
-                            </td>
-                            
-
-                            @*<td>
-                                    @if (Model.Page > 1)
-                                    {
-                                        <a class="btn btn-primary"
-                                           asp-controller="Person"
-                                           asp-action="Index"
-                                           asp-route-sortField="@Model.SortField"
-                                           asp-route-sortOrder="@Model.SortOrder"
-                                           asp-route-page="@(Model.Page - 1)"
-                                           asp-route-q="@Model.q">
-                                            Prev
-                                        </a>
-
-                                    }
-                                </td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td>
-                                    <a class="btn btn-primary"
-                                        asp-controller="Person"
-                                       asp-action="Index"
-                                       asp-route-sortField="@Model.SortField"
-                                       asp-route-sortOrder="@Model.SortOrder"
-                                       asp-route-page="@(Model.Page + 1)"
-                                       asp-route-q="@Model.q">
-                                        Next
-                                    </a>
-                                </td>*@
-                        </tr>
-                        </tfoot>
-                    </table>
-
-
-                </div>
-            </div>
-        </div>
-
-        <a asp-controller="Person" asp-action="New" class="btn btn-secondary" role="button" aria-pressed="true">
-            Create new
-        </a>
-
-        <a asp-controller="Person" asp-action="BulkAdd" class="btn btn-secondary" role="button" aria-pressed="true">
-            Bulk add
-        </a>
-
-    </div>
-</section>
 
 @section Scripts
 {
     <script>
-        function FetchPerson(id) {
-            $.ajax({
-                url: "/Person/_SelectPerson/" + id,
-                success: function (result) {
-                    $('#selectPersonPlaceHolder').html(result);
-                }
+
+
+        $("#jsGrid").jsGrid({
+            width: "100%",
+            height: "400px",
+            autoload: false,
+            inserting: false,
+            editing: false,
+            sorting: true,
+            paging: true,
+            pageLoading: true,
+            filtering: true,
+            rowDoubleClick: function (args) { window.location.href = "/Person/Edit?id=" + args.item.id; },
+            pageSize: 10,
+            pageButtonCount: 5,
+
+            controller: {
+                loadData: function (filter) {
+                    return $.ajax({
+                        type: "GET",
+                        url: "/Person/PersonDataSource",
+                        data: this.saveAndGet(filter),
+                        dataType: "json"
+                    });
+                },
+                saveAndGet: function (filter) {
+                    localStorage.setItem(window.location.href, JSON.stringify(filter));
+                    console.log(filter);
+                    return filter;
+                },
+
+
+
+            },
+
+            fields: [
+                { name: "id", type: "text", width: 150, visible: false },
+                { name: "name", type: "text", width: 190, validate: "required", filterTemplate: createTextFilterTemplate("name") },
+                { name: "personalNumber", type: "text", width: 190, validate: "required", filterTemplate: createTextFilterTemplate("personalNumber") },
+                { name: "postalCode", title: "Åldrer", type: "text", width: 200, filterTemplate: createTextFilterTemplate("postalCode") },
+            ]
+        });
+
+        var grid = $("#jsGrid").data("JSGrid");
+        var existing = JSON.parse(localStorage.getItem(window.location.href));
+        var urlParams = new URLSearchParams(window.location.search);
+        if (!urlParams.has('keepState')) existing = null;
+
+        if (existing)
+            grid.option("pageIndex", existing.pageIndex);
+        if (existing)
+            grid.sort({
+                field: existing.sortField,
+                order: existing.sortOrder
             });
+        else
+            grid.sort();
+
+        function createTextFilterTemplate(propertyName) {
+            return function () {
+                if (!this.filtering)
+                    return "";
+                var existing = JSON.parse(localStorage.getItem(window.location.href));
+
+                var grid = this._grid,
+                    $result = this.filterControl = this._createTextBox();
+                if (this.autosearch) {
+                    $result.on("keypress",
+                        function (e) {
+                            if (e.which === 13) {
+                                grid.search();
+                                e.preventDefault();
+                            }
+                        });
+                }
+                var gridFilter = existing;
+                if (gridFilter && gridFilter[propertyName]) {
+                    $result.val(gridFilter[propertyName]);
+                }
+
+                return $result;
+            }
         }
+
+
+
     </script>    
 }
-
